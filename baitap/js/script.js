@@ -1,6 +1,6 @@
 /*
     {
-    method:"POST"
+    method:"POST",
     headers: {
         "Content-Type":"application/json",
 
@@ -8,10 +8,10 @@
     body: JSON.stringify(data),
 }
 */
-const sererApi = "http://localhost:3000";
+const serverApi = "http://localhost:3000";
 const getUsers = async () => {
   try {
-    const response = await fetch(`${sererApi}/users`);
+    const response = await fetch(`${serverApi}/users`);
     if (!response.ok) {
       throw new Error("Fetch to failed");
     }
@@ -21,6 +21,26 @@ const getUsers = async () => {
     console.log(e);
   }
 };
+// addUser .1
+const addUer = async (data) => {
+  try {
+    const response = await fetch(`${serverApi}/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+};
+// addUer({
+//   name: "user 4",
+//   email: "gmail.com",
+//   status: "active",
+// });
 const render = (users) => {
   const tbody = document.querySelector("table tbody");
   tbody.innerHTML = `${users
@@ -42,4 +62,21 @@ const render = (users) => {
     })
     .join("")}`;
 };
+// handleAddUser .2
+const handleAddUser = () => {
+  const form = document.querySelector(".form-update");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = Object.fromEntries(new FormData(form));
+    console.log(formData);
+    // async phải chuyển cái gần nhất là form.addEvent
+    const status = await addUer(formData);
+    if (status) {
+      // thêm thành công
+      getUsers();
+      form.reset();
+    }
+  });
+};
+handleAddUser();
 getUsers();
