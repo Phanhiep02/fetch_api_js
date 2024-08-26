@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css"
+      integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="container py-3">
+      <h2>Danh sách người dùng</h2>
+      <form action="" class="filter-form mb-3">
+        <div class="row">
+          <div class="col-3">
+            <select class="form-select" name="status">
+              <option value="all">tất cả trạng thái</option>
+              <option value="active">kích hoạt</option>
+              <option value="inactive">chưa kích hoạt</option>
+            </select>
+          </div>
+          <div class="col-7">
+            <input
+              type="search"
+              class="form-control"
+              placeholder="Từ khóa tìm kiếm"
+              name="keyword"
+            />
+          </div>
+          <div class="col-2 d-grid">
+            <button type="submit" class="btn btn-primary">Tìm</button>
+          </div>
+        </div>
+      </form>
+      <div class="btn-group btn-group-sm mb-3">
+        <button class="btn sort-item btn-primary active" data-value="latest">
+          mới nhất
+        </button>
+        <button class="btn sort-item btn-primary" data-value="oldest">
+          cũ nhất nhất
+        </button>
+      </div>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th width="5%">STT</th>
+            <th>Tên</th>
+            <th>Email</th>
+            <th>Trạng thái</th>
+            <th width="5%">Sửa</th>
+
+            <th width="5%">Xóa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>hiep</td>
+            <td>hiep@gmail.com</td>
+            <td><span class="badge bg-success">kích hoạt </span></td>
+            <td><button class="btn btn-warning">Sửa</button></td>
+            <td><button class="btn btn-danger">Xóa</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <h2>Thêm người dùng</h2>
+      <form action="" class="form-update">
+        <div class="mb-3">
+          <label for="">Tên</label>
+          <input
+            type="text"
+            name="name"
+            class="form-control"
+            placeholder="Tên..."
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="">Email</label>
+          <input
+            type="email"
+            name="email"
+            class="form-control"
+            placeholder="Email..."
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <label for="">Trạng thái</label>
+          <select name="status" id="" class="form-select">
+            <option value="active">Kích hoạt</option>
+            <option value="inactive">Chưa kích hoạt</option>
+          </select>
+        </div>
+        <button class="btn btn-primary">Lưu thay đổi</button>
+      </form>
+    </div>
+    <script type="module" src="./js/script.js"></script>
+  </body>
+</html>
