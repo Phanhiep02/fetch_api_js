@@ -56,6 +56,16 @@ const updateUer = async (id, data) => {
     return false;
   }
 };
+const deleteUser = async (id) => {
+  try {
+    const response = await fetch(`${serverApi}/users/${id}`, {
+      method: "DELETE",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+};
 // sửa tương tự thêm , khác POST thành PATCH , url thêm id
 // getUser .1
 const getUser = async (id) => {
@@ -85,7 +95,7 @@ const render = (users) => {
         status === "active" ? "kích hoạt" : "chưa kích hoạt"
       } </span></td>
             <td><button class="btn btn-warning" data-id="${id}" data-action="update">Sửa</button></td>
-            <td><button class="btn btn-danger">Xóa</button></td>
+            <td><button class="btn btn-danger"data-id="${id}" data-action="delete">Xóa</button></td>
           </tr>
     `;
     })
@@ -179,7 +189,23 @@ const cancelUpdateForm = () => {
     // cancelBtn.remove();
   });
 };
+// handleDelete
+const handleDeleteUer = () => {
+  const tbody = document.querySelector("tbody");
+  tbody.addEventListener("click", async (e) => {
+    const { action, id } = e.target.dataset;
+    if (action === "delete" && confirm("Chắc chưa ?")) {
+      // call API
+      const status = await deleteUser(id);
+      if (!status) {
+        alert("Đã có lỗi xảy ra");
+      }
+      getUsers();
+    }
+  });
+};
 cancelUpdateForm();
 handleUpdateUser();
 handleAddUser();
 getUsers();
+handleDeleteUer();
