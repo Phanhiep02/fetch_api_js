@@ -14,9 +14,15 @@ const cancelBtn = document.createElement("button");
 cancelBtn.className = "btn btn-danger";
 cancelBtn.innerText = "Hủy";
 cancelBtn.type = "button";
-const getUsers = async () => {
+const getUsers = async (query = {}) => {
   try {
-    const response = await fetch(`${serverApi}/users`);
+    // hàm search có sẵn ở js new URLsearch
+    let queryString = new URLSearchParams(query).toString();
+    if (queryString) {
+      queryString = "?" + queryString;
+    }
+
+    const response = await fetch(`${serverApi}/users${queryString}`);
     if (!response.ok) {
       throw new Error("Fetch to failed");
     }
@@ -204,6 +210,35 @@ const handleDeleteUer = () => {
     }
   });
 };
+// kĩ thuật debounce
+const debounce = (callback, timeout = 500) => {
+  let timeoutId = null;
+
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      callback(...args);
+    }, timeout);
+  };
+};
+// tìm kiếm JSON thì thêm ?q GET /posts?q=internet
+// nếu muốn tìm kiếm kiểu include thì dùng kĩ thuật like JSON GET /posts?title_like=server
+const handleSearch = () => {
+  const keywordEl = document.querySelector(".keyword");
+  keywordEl.addEventListener(
+    "input",
+    debounce((e) => {
+      // lấy keyword khi nhập dùng event input
+      const keyword = e.target.value;
+      // console.log(keyword);
+      // phải để server xử lí chứ không kéo hết về client rồi làm
+      // khi nhập thì gửi nhiều request sẽ bị chậm nên sử dụng debounce
+      getUsers({ q: keyword });
+    })
+  );
+};
+// debounce
+handleSearch();
 cancelUpdateForm();
 handleUpdateUser();
 handleAddUser();
