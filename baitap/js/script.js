@@ -28,6 +28,15 @@ const getUsers = async (query = {}) => {
     }
     const users = await response.json();
     render(users);
+    // tính số trang = tổng số bản ghi / số bản ghi của 1 trang (limit)
+    // làm tròn lên Math.ceil
+    // tổng số bản ghi x-total-count ở header
+    // bản ghi _limit
+    const totalPages = Math.ceil(
+      response.headers.get("x-total-count") / query._limit
+    );
+
+    renderPagination(totalPages);
   } catch (e) {
     console.log(e);
   }
@@ -106,6 +115,40 @@ const render = (users) => {
     `;
     })
     .join("")}`;
+};
+const renderPagination = (totalPages) => {
+  const paginationView = document.querySelector(".pagination-view");
+  // Xử lí khi ở trang 1 sẽ ko có nút prev
+  let paginationHTML = `<ul class="pagination d-flex justify-content-end">
+    <li class="page-item">
+     ${
+       query._page > 1
+         ? ` <a class="page-link" href="#" aria-label="Previous" data-type="prev">
+        &laquo;`
+         : ""
+     }
+      </a>
+    </li>`;
+  // 1. đang ở trang nào trang đó sẽ active
+  // 2. bấm vào các số chuyển trang tương ứng data-page
+  for (let i = 1; i <= totalPages; i++) {
+    paginationHTML += `<li class="page-item ${
+      i === query._page ? "active" : ""
+    }"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+  }
+
+  paginationHTML += `<li class="page-item">
+    ${
+      query._page < totalPages
+        ? `  <a class="page-link" href="#" aria-label="Next" data-type="next">
+        &raquo;
+      </a>`
+        : ""
+    }
+    </li>
+  </ul>`;
+
+  paginationView.innerHTML = paginationHTML;
 };
 // handleAddUser .2
 const handleAddUser = () => {
@@ -258,12 +301,45 @@ const handleSort = () => {
     e.target.classList.add("active");
   });
 };
+
 // đồng bộ sort và search
 
 const query = {
   _sort: "id",
   _order: "desc",
+  _limit: 3,
+  _page: 1,
 };
+
+// pagination  ?_limit : giới hạn bản ghi
+// trả về X-total-count là tổng số bản ghi ở network
+
+// handlePagination
+const handleNavigatePagination = () => {
+  const paginationViewEl = document.querySelector(".pagination-view");
+  paginationViewEl.addEventListener("click", (e) => {
+    // thẻ a nên dùng prevent
+    e.preventDefault();
+    const page = e.target.dataset.page;
+    const type = e.target.dataset.type;
+    if (page) {
+      // cho _page = page hiện tại
+      query._page = +page;
+      // gọi lại hàm
+      getUsers(query);
+    }
+    // khi bấm lùi
+    if (type === "prev") {
+      query._page--;
+      getUsers(query);
+    }
+    if (type === "next") {
+      query._page++;
+      getUsers(query);
+    }
+  });
+};
+handleNavigatePagination();
 handleSort();
 getUsers(query);
 handleSearch();
