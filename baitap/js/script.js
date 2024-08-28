@@ -238,9 +238,33 @@ const handleSearch = () => {
   );
 };
 // debounce
+
+// sort   GET /posts?_sort=views&_order=asc
+
+const handleSort = () => {
+  const btnGroup = document.querySelector(".btn-group ");
+  btnGroup.addEventListener("click", (e) => {
+    const sortValue = e.target.dataset.value;
+    // khi sắp xếp được thì bên tìm kiếm sẽ không đồng bộ
+    getUsers({
+      _sort: "id",
+      _order: sortValue === "latest" ? "desc" : "asc",
+    });
+    // xử lí giao diện
+    var btnActive = btnGroup.querySelector(".active");
+    if (btnActive) {
+      btnActive.classList.remove("active");
+    }
+    e.target.classList.add("active");
+  });
+};
+handleSort();
+getUsers({
+  _sort: "id",
+  _order: "desc",
+});
 handleSearch();
 cancelUpdateForm();
 handleUpdateUser();
 handleAddUser();
-getUsers();
 handleDeleteUer();
