@@ -233,7 +233,8 @@ const handleSearch = () => {
       // console.log(keyword);
       // phải để server xử lí chứ không kéo hết về client rồi làm
       // khi nhập thì gửi nhiều request sẽ bị chậm nên sử dụng debounce
-      getUsers({ q: keyword });
+      query.q = keyword;
+      getUsers(query);
     })
   );
 };
@@ -246,10 +247,9 @@ const handleSort = () => {
   btnGroup.addEventListener("click", (e) => {
     const sortValue = e.target.dataset.value;
     // khi sắp xếp được thì bên tìm kiếm sẽ không đồng bộ
-    getUsers({
-      _sort: "id",
-      _order: sortValue === "latest" ? "desc" : "asc",
-    });
+    // call api
+    query._order = sortValue === "latest" ? "desc" : "asc";
+    getUsers(query);
     // xử lí giao diện
     var btnActive = btnGroup.querySelector(".active");
     if (btnActive) {
@@ -258,11 +258,14 @@ const handleSort = () => {
     e.target.classList.add("active");
   });
 };
-handleSort();
-getUsers({
+// đồng bộ sort và search
+
+const query = {
   _sort: "id",
   _order: "desc",
-});
+};
+handleSort();
+getUsers(query);
 handleSearch();
 cancelUpdateForm();
 handleUpdateUser();
