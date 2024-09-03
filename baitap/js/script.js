@@ -255,7 +255,14 @@ const handleDeleteUer = () => {
       if (!status) {
         alert("Đã có lỗi xảy ra");
       }
+      const remainUser = document.querySelectorAll("tbody tr").length - 1;
       getUsers(query);
+      console.log(remainUser, query._page);
+
+      if (remainUser === 0 && query._page > 1) {
+        query._page--;
+        getUsers(query);
+      }
     }
   });
 };
