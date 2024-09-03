@@ -165,7 +165,13 @@ const handleAddUser = () => {
       const status = await addUser(formData);
       if (status) {
         // thêm thành công
-        getUsers();
+        // chuyển về trang 1
+        query._page = 1;
+        // chuyển thành sắp xếp mới nhất
+        query._order = "desc";
+        // hàm getUsers thêm hết query để phần phân trang đc đồng bộ
+        getUsers(query);
+        renderSort();
         form.reset();
       }
     } else {
@@ -174,7 +180,7 @@ const handleAddUser = () => {
 
       const status = await updateUer(id, formData);
       if (status) {
-        getUsers();
+        getUsers(query);
         // trong hàm nãy sẽ phải xóa dataset đi
 
         switchFormAdd();
@@ -249,7 +255,7 @@ const handleDeleteUer = () => {
       if (!status) {
         alert("Đã có lỗi xảy ra");
       }
-      getUsers();
+      getUsers(query);
     }
   });
 };
@@ -284,7 +290,20 @@ const handleSearch = () => {
 // debounce
 
 // sort   GET /posts?_sort=views&_order=asc
-
+//
+const renderSort = () => {
+  const btnSortEl = document.querySelector(".btn-sort");
+  btnSortEl.innerHTML = `  <button class="btn sort-item btn-primary ${
+    query._order === "desc" ? "active" : ""
+  }" data-value="latest">
+    mới nhất
+  </button>
+  <button class="btn sort-item btn-primary ${
+    query._order === "asc" ? "active" : ""
+  }" data-value="oldest">
+    cũ nhất nhất
+  </button>`;
+};
 const handleSort = () => {
   const btnGroup = document.querySelector(".btn-group ");
   btnGroup.addEventListener("click", (e) => {
@@ -294,11 +313,7 @@ const handleSort = () => {
     query._order = sortValue === "latest" ? "desc" : "asc";
     getUsers(query);
     // xử lí giao diện
-    var btnActive = btnGroup.querySelector(".active");
-    if (btnActive) {
-      btnActive.classList.remove("active");
-    }
-    e.target.classList.add("active");
+    renderSort();
   });
 };
 
@@ -347,3 +362,4 @@ cancelUpdateForm();
 handleUpdateUser();
 handleAddUser();
 handleDeleteUer();
+renderSort();
